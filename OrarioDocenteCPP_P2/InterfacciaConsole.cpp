@@ -85,7 +85,7 @@ void InterfacciaConsole::VerificaOrario() {
         cout << "Orario valido: tutti i vincoli sono rispettati.\n";
     else {
         if (!senzaBuchi) cout << "Vincolo non rispettato: sono presenti buchi.\n";
-        if (!oreConsentite) cout << "Vincolo non rispettato: piu' di 7 ore in un giorno.\n";
+        if (!oreConsentite) cout << "Vincolo non rispettato: " << vincoloMaxOre.GetMessaggio() << ".\n";
     }
 }
 
