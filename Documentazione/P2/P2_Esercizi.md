@@ -81,7 +81,7 @@ class VincoloMaxOreMateria : public Vincolo {
 private:
     int massimoOre;
 public:
-    explicit VincoloMaxOreMateria(int massimoOre);
+    VincoloMaxOreMateria(int massimoOre);
     bool Verifica(Orario& orario) override;
 };
 ```
@@ -227,3 +227,7 @@ Per ogni test specifica **stato iniziale, operazione, risultato atteso, risultat
 | **Totale** | **20** |
 
 **Riferimento per il docente:** [soluzioni commentate](P2_Soluzioni_Esercizi.md). Le soluzioni non sostituiscono la verifica della compilazione del progetto.
+
+## Esercizio M — Comunicare il motivo del rifiuto
+
+Estendi `Vincolo` con `virtual std::string GetMessaggio() = 0;` e implementa il metodo in entrambe le classi derivate. Modifica `Scambia` e `VerificaVincoli` affinché ricevano un parametro `std::string& messaggio`. Verifica che, dopo uno scambio rifiutato, la console indichi il **primo vincolo violato**, mantenendo l'orario invariato. Questo esercizio è di approfondimento e non modifica il punteggio di 20 punti.
