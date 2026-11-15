@@ -197,3 +197,7 @@ Per T08 e T09 costruite **orari iniziali validi**. Se necessario preparate dati 
 Non è richiesto introdurre `unique_ptr`, `map`, `set`, template personalizzati o un'interfaccia grafica.
 
 **Riferimenti:** [dispensa teorica P2](P2_Dispensa_Teorica.md) · [scheda didattica P2](P2_Scheda_Didattica.md).
+
+## Aggiornamento P2 — Mostrare il vincolo violato
+
+La versione aggiornata del motore utilizza `bool Scambia(Orario& orario, Posizione prima, Posizione seconda, std::string& messaggio)`. Aggiungete alla classe astratta `Vincolo` il metodo `virtual std::string GetMessaggio() = 0;` e implementatelo nelle classi derivate. Quando `VerificaVincoli` trova un vincolo non rispettato, deve assegnare a `messaggio` la descrizione fornita dal vincolo. La console stampa il messaggio dopo il rifiuto. Aggiornate di conseguenza le dichiarazioni e tutte le chiamate a `Scambia`. Non è necessario usare eccezioni.
