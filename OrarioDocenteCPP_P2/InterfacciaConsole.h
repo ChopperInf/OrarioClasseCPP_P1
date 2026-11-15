@@ -24,6 +24,7 @@ private:
     void VisualizzaClassi();
     void CercaClasse();
     void AggiungiClasse();
+    void ModificaMassimoOre();
 public:
     InterfacciaConsole(Orario& orario, ElencoClassi& elencoClassi);
     void Esegui();
