@@ -6,7 +6,7 @@
 using namespace std;
 
 InterfacciaConsole::InterfacciaConsole(Orario& orario, ElencoClassi& elencoClassi)
-    : orario(orario), elencoClassi(elencoClassi), vincoloMaxOre(7) {
+    : orario(orario), elencoClassi(elencoClassi), vincoloMaxOre(4) {
     motore.AggiungiVincolo(&vincoloSenzaBuchi);
     motore.AggiungiVincolo(&vincoloMaxOre);
 }
@@ -100,6 +100,8 @@ void InterfacciaConsole::MostraMenu() {
     cout << "5 - Visualizza elenco classi\n";
     cout << "6 - Cerca una classe\n";
     cout << "7 - Aggiungi una classe\n";
+    cout << "8 - Modifica massimo ore giornaliere (attuale: "
+         << vincoloMaxOre.GetMassimoOre() << ")\n";
     cout << "0 - Esci\n";
 }
 
@@ -107,7 +109,7 @@ void InterfacciaConsole::Esegui() {
     int scelta;
     do {
         MostraMenu();
-        scelta = LeggiIntero("Scelta: ", 0, 7);
+        scelta = LeggiIntero("Scelta: ", 0, 8);
         switch (scelta) {
         case 1: VisualizzaOrario(); break;
         case 2: VisualizzaTessera(); break;
@@ -116,6 +118,7 @@ void InterfacciaConsole::Esegui() {
         case 5: VisualizzaClassi(); break;
         case 6: CercaClasse(); break;
         case 7: AggiungiClasse(); break;
+        case 8: ModificaMassimoOre(); break;
         case 0: cout << "Chiusura del programma.\n"; break;
         }
     } while (scelta != 0);
@@ -156,4 +159,14 @@ void InterfacciaConsole::AggiungiClasse() {
         cout << "Classe aggiunta all'archivio.\n";
     else
         cout << "Inserimento rifiutato: sigla vuota o gia' presente.\n";
+}
+
+void InterfacciaConsole::ModificaMassimoOre() {
+    cout << "\nMODIFICA MASSIMO ORE GIORNALIERE\n";
+    cout << "Limite attuale: " << vincoloMaxOre.GetMassimoOre() << "\n";
+    int nuovoMassimo = LeggiIntero("Nuovo limite (1-8): ", 1, 8);
+    vincoloMaxOre.SetMassimoOre(nuovoMassimo);
+    cout << "Nuovo limite impostato: " << vincoloMaxOre.GetMassimoOre() << "\n";
+    if (!vincoloMaxOre.Verifica(orario))
+        cout << "Attenzione: l'orario attuale supera il nuovo limite.\n";
 }
