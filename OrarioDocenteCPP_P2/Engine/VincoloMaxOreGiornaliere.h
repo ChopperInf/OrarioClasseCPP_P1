@@ -6,6 +6,8 @@ private:
     int massimoOre;
 public:
     VincoloMaxOreGiornaliere(int massimoOre);
+    int GetMassimoOre();
+    void SetMassimoOre(int nuovoMassimo);
     bool Verifica(Orario& orario) override;
-    std::string GetMessaggio() override { return "superato il numero massimo di ore giornaliere"; }
+    std::string GetMessaggio() override;
 };
