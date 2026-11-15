@@ -70,8 +70,11 @@ void InterfacciaConsole::RichiediScambio() {
         cout << "Hai selezionato due volte la stessa cella.\n";
         return;
     }
-    if (motore.Scambia(orario, prima, seconda)) cout << "Scambio autorizzato.\n";
-    else cout << "Scambio rifiutato: posizioni non valide oppure almeno un vincolo non rispettato.\n";
+    string messaggio;
+    if (motore.Scambia(orario, prima, seconda, messaggio))
+        cout << "Scambio autorizzato.\n";
+    else
+        cout << "Scambio rifiutato: " << messaggio << ".\n";
 }
 
 void InterfacciaConsole::VerificaOrario() {
