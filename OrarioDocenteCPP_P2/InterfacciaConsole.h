@@ -3,14 +3,16 @@
 #include "Model/Orario.h"
 #include "Model/ElencoClassi.h"
 #include "Engine/MotoreScambi.h"
-#include "Engine/ValidatoreOrario.h"
+#include "Engine/VincoloSenzaBuchi.h"
+#include "Engine/VincoloMaxOreGiornaliere.h"
 
 class InterfacciaConsole {
 private:
     Orario& orario; // Riferimento non proprietario.
     ElencoClassi& elencoClassi; // Riferimento non proprietario.
+    VincoloSenzaBuchi vincoloSenzaBuchi;
+    VincoloMaxOreGiornaliere vincoloMaxOre;
     MotoreScambi motore;
-    ValidatoreOrario validatore;
 
     int LeggiIntero(std::string messaggio, int minimo, int massimo);
     Posizione LeggiPosizione();
