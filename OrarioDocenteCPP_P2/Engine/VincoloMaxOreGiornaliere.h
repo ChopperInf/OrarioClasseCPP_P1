@@ -5,6 +5,7 @@ class VincoloMaxOreGiornaliere : public Vincolo {
 private:
     int massimoOre;
 public:
-    explicit VincoloMaxOreGiornaliere(int massimoOre);
+    VincoloMaxOreGiornaliere(int massimoOre);
     bool Verifica(Orario& orario) override;
+    std::string GetMessaggio() override { return "superato il numero massimo di ore giornaliere"; }
 };
