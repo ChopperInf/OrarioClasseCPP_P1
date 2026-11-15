@@ -69,7 +69,7 @@ class VincoloMaxOreMateria : public Vincolo {
 private:
     int massimoOre;
 public:
-    explicit VincoloMaxOreMateria(int massimoOre);
+    VincoloMaxOreMateria(int massimoOre);
     bool Verifica(Orario& orario) override;
 };
 ```
@@ -247,3 +247,24 @@ La colonna **risultato osservato** può essere compilata soltanto dopo l'esecuzi
 | **Totale** | **20** | |
 
 **Nota di revisione:** queste soluzioni seguono l'API del prototipo P2 pubblicato. Se il successivo collaudo richiederà modifiche alle interfacce, aggiornare insieme esercizi, soluzioni e guida di laboratorio.
+
+## Soluzione M — Comunicare il motivo del rifiuto
+
+Nella classe astratta aggiungere `virtual std::string GetMessaggio() = 0;` (e `#include <string>`). Le classi derivate ridefiniscono il metodo, per esempio:
+
+```cpp
+std::string GetMessaggio() override {
+    return "superato il massimo di ore della stessa materia";
+}
+```
+
+Il motore modifica la firma di `VerificaVincoli` e `Scambia` aggiungendo `std::string& messaggio`. Nel ciclo:
+
+```cpp
+if (!vincoli[i]->Verifica(orario)) {
+    messaggio = vincoli[i]->GetMessaggio();
+    return false;
+}
+```
+
+La console chiama `Scambia(orario, prima, seconda, messaggio)` e stampa il motivo in caso di rifiuto. Il motore deve comunque ripristinare le celle dopo uno scambio non valido.
