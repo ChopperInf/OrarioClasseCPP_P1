@@ -71,13 +71,19 @@ void InterfacciaConsole::RichiediScambio() {
         return;
     }
     if (motore.Scambia(orario, prima, seconda)) cout << "Scambio autorizzato.\n";
-    else cout << "Scambio rifiutato: l'orario non rispetterebbe il vincolo senza buchi.\n";
+    else cout << "Scambio rifiutato: posizioni non valide oppure almeno un vincolo non rispettato.\n";
 }
 
 void InterfacciaConsole::VerificaOrario() {
     cout << "\nVERIFICA DELL'ORARIO\n";
-    if (validatore.SenzaBuchi(orario)) cout << "Orario valido: non ci sono buchi.\n";
-    else cout << "Orario non valido: sono presenti ore vuote prima di altre lezioni.\n";
+    bool senzaBuchi = vincoloSenzaBuchi.Verifica(orario);
+    bool oreConsentite = vincoloMaxOre.Verifica(orario);
+    if (senzaBuchi && oreConsentite)
+        cout << "Orario valido: tutti i vincoli sono rispettati.\n";
+    else {
+        if (!senzaBuchi) cout << "Vincolo non rispettato: sono presenti buchi.\n";
+        if (!oreConsentite) cout << "Vincolo non rispettato: piu' di 7 ore in un giorno.\n";
+    }
 }
 
 void InterfacciaConsole::MostraMenu() {
