@@ -6,7 +6,10 @@
 using namespace std;
 
 InterfacciaConsole::InterfacciaConsole(Orario& orario, ElencoClassi& elencoClassi)
-    : orario(orario), elencoClassi(elencoClassi) {}
+    : orario(orario), elencoClassi(elencoClassi), vincoloMaxOre(7) {
+    motore.AggiungiVincolo(&vincoloSenzaBuchi);
+    motore.AggiungiVincolo(&vincoloMaxOre);
+}
 
 int InterfacciaConsole::LeggiIntero(string messaggio, int minimo, int massimo) {
     int valore;
