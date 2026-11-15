@@ -65,7 +65,7 @@ class VincoloMaxOreGiornaliere : public Vincolo {
 private:
     int massimoOre;
 public:
-    explicit VincoloMaxOreGiornaliere(int massimoOre);
+    VincoloMaxOreGiornaliere(int massimoOre);
     bool Verifica(Orario& orario) override;
 };
 ```
@@ -199,3 +199,7 @@ Un motore senza vincoli registrati, nella nostra P2, non autorizza scambi.
 6. Perché il motore deve ripristinare le celle quando un controllo fallisce?
 
 **Per approfondire nel codice:** [Vincolo.h](../../OrarioDocenteCPP_P2/Engine/Vincolo.h), [MotoreScambi.cpp](../../OrarioDocenteCPP_P2/Engine/MotoreScambi.cpp), [VincoloSenzaBuchi.cpp](../../OrarioDocenteCPP_P2/Engine/VincoloSenzaBuchi.cpp).
+
+## Aggiornamento: identificare il vincolo violato
+
+Nel prototipo P2 aggiornato, `Vincolo` dichiara anche `virtual std::string GetMessaggio() = 0;`. Ogni classe derivata implementa questo metodo e restituisce un messaggio descrittivo. `MotoreScambi::Scambia` mantiene il risultato `bool`, ma riceve anche `std::string& messaggio`: se una verifica fallisce, `VerificaVincoli` assegna il messaggio del **primo** vincolo non rispettato. Dopo il ripristino dello scambio, la console mostra il motivo del rifiuto. Il nuovo metodo è un ulteriore esempio di polimorfismo.
