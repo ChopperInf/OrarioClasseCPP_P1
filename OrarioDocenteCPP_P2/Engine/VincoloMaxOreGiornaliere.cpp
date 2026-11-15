@@ -16,3 +16,16 @@ bool VincoloMaxOreGiornaliere::Verifica(Orario& orario) {
     }
     return true;
 }
+
+int VincoloMaxOreGiornaliere::GetMassimoOre() {
+    return massimoOre;
+}
+
+void VincoloMaxOreGiornaliere::SetMassimoOre(int nuovoMassimo) {
+    if (nuovoMassimo >= 1 && nuovoMassimo <= 8)
+        massimoOre = nuovoMassimo;
+}
+
+std::string VincoloMaxOreGiornaliere::GetMessaggio() {
+    return "superato il numero massimo di " + std::to_string(massimoOre) + " ore giornaliere";
+}
