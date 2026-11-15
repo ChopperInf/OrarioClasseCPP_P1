@@ -1,27 +1,34 @@
-# OrarioDocenteCPP_P1 — prototipo consolidato P1
+# OrarioDocenteCPP_P2 — vincoli polimorfici
 
-Prototipo console C++17 dell'orario di **un solo docente**. Ogni tessera contiene materia, classe e aula. La matrice `Tessera* celle[5][8]` e' volutamente conservata dal prototipo precedente.
+Prototipo console C++17 dell'orario di un docente, ottenuto dalla P1 senza modificarne i sorgenti.
 
-## Ambiente di sviluppo
+## Aprire il progetto
 
-Il percorso didattico utilizza **Visual Studio** con un normale progetto **Applicazione console C++**. Aprire `OrarioDocenteCPP_P1.sln` in Visual Studio, quindi compilare ed eseguire dall'IDE.
+Aprire `OrarioDocenteCPP_P2.sln` in Visual Studio 2022, selezionare **Debug | x64** e compilare. Il progetto usa MSVC v143 e C++17; non richiede CMake.
 
-Non sono richiesti generatori di progetto o strumenti di build esterni. I file `.h` non vanno compilati separatamente.
+## Novità rispetto alla P1
 
-## Responsabilita'
+- `Engine/Vincolo.h`: classe astratta con metodo virtuale puro `Verifica()`.
+- `Engine/VincoloSenzaBuchi`: impedisce ore vuote tra lezioni dello stesso giorno.
+- `Engine/VincoloMaxOreGiornaliere`: impedisce di superare **7 lezioni** nello stesso giorno.
+- `Engine/MotoreScambi`: conserva `std::vector<Vincolo*>`, verifica tutti i vincoli prima e dopo lo scambio e annulla gli scambi non validi.
+- `InterfacciaConsole`: possiede i due vincoli e li registra nel motore. L'opzione 4 controlla entrambe le regole.
 
-- `Model/Classe`: anagrafica di una classe (P1).
-- `Model/ElencoClassi`: archivio dinamico `std::vector<Classe>` (P1).
-- `Model/Tessera`: dati della lezione (materia, classe, aula).
-- `Model/Posizione`: indici giorno/ora, da zero.
-- `Model/Orario`: proprietario delle tessere, accesso e scambio delle celle.
-- `Engine/ValidatoreOrario`: controlla l'assenza di ore vuote prima di lezioni successive.
-- `Engine/MotoreScambi`: scambia e ripristina in caso di fallimento.
-- `DatiEsempio`: costruisce l'orario e l'elenco iniziale delle classi.
-- `InterfacciaConsole`: menu, input e visualizzazione.
+Il motore **non possiede** i vincoli registrati e non li elimina con `delete`. Gli oggetti devono rimanere vivi durante il loro utilizzo.
 
-## Limiti voluti
+## Casi di prova manuali
 
-Il programma non gestisce conflitti tra docenti/classi, salvataggio su file o generazione automatica. Lo scambio e' un prototipo per verificare il comportamento delle classi. `Get` restituisce un puntatore non proprietario modificabile: non conservarlo oltre la durata dell'orario, non eliminarlo e non usarlo per alterare gli invarianti. La copia di `Orario` e' disabilitata per evitare doppie deallocazioni.
+L'orario iniziale contiene 7 lezioni dal lunedì al giovedì e 6 il venerdì.
 
-`Set` accetta soltanto celle vuote e acquisisce la proprieta' del puntatore solo se restituisce `true`. In caso contrario il chiamante deve eliminare la tessera non inserita.
+1. **Scambio valido:** lunedì ora 1 con lunedì ora 2; deve essere accettato.
+2. **Buco:** lunedì ora 2 con venerdì ora 8; deve essere rifiutato e annullato.
+3. **Superamento del massimo senza buchi:** venerdì ora 6 con lunedì ora 8. Venerdì passa a 5 lezioni consecutive, lunedì a 8 consecutive; lo scambio deve essere rifiutato per il limite di 7 ore.
+4. **Verifica iniziale:** opzione 4; entrambi i vincoli devono essere rispettati.
+
+**Nota:** il punto 3 utilizza uno scambio tra una tessera e una cella vuota; gli orari delle altre giornate rimangono invariati.
+
+## Documentazione
+
+Vedere [scheda didattica P2](../Documentazione/P2/P2_Scheda_Didattica.md).
+
+Le classi del modello, l'archivio `ElencoClassi` e le funzioni della console P1 sono mantenuti.
