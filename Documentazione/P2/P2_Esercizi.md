@@ -191,7 +191,7 @@ Per ciascuno indica se viene accettato o rifiutato, quale vincolo eventualmente 
 Progetta `VincoloPrimaOraLibera`, che richiede che **l'ora 1 di ogni giorno sia vuota**.
 
 1. Scrivi la dichiarazione della classe derivata da `Vincolo`.
-2. Implementa `Verifica()`.
+2. Implementa `Verifica()` e `GetMessaggio()`.
 3. Spiega come registrare un'istanza nel motore.
 4. Indica quali metodi di `MotoreScambi` devono essere modificati per supportare questo nuovo vincolo.
 
@@ -231,3 +231,15 @@ Per ogni test specifica **stato iniziale, operazione, risultato atteso, risultat
 ## Esercizio M — Comunicare il motivo del rifiuto
 
 Estendi `Vincolo` con `virtual std::string GetMessaggio() = 0;` e implementa il metodo in entrambe le classi derivate. Modifica `Scambia` e `VerificaVincoli` affinché ricevano un parametro `std::string& messaggio`. Verifica che, dopo uno scambio rifiutato, la console indichi il **primo vincolo violato**, mantenendo l'orario invariato. Questo esercizio è di approfondimento e non modifica il punteggio di 20 punti.
+
+---
+
+## Esercizio N — Limite modificabile e messaggio aggiornato
+
+Partendo da `VincoloMaxOreMateria`, il cui limite iniziale è 2, realizzate i metodi `GetMassimoOre()` e `SetMassimoOre(int)`. Il setter deve accettare soltanto valori tra 1 e 8. Aggiungete al menu una voce che permetta di modificare il limite e mostri il valore corrente.
+
+Il metodo `GetMessaggio()` deve riportare **il limite effettivamente impostato**, non un numero fisso. Dopo la modifica, il motore deve utilizzare lo stesso oggetto vincolo già registrato.
+
+**Prove richieste:** avvio con limite 2; cambio a 3; controllo di una giornata con tre lezioni della stessa materia; cambio a 2 e nuova verifica; tentativo di inserire 0 o 9; controllo che il testo del messaggio riporti il limite corretto. Indicate inoltre cosa succede agli scambi se l'orario iniziale viola il limite corrente.
+
+**Consegna:** codice dei due metodi, modifica al menu e tabella dei risultati attesi e osservati. Esercizio di approfondimento, non incluso nel punteggio base di 20 punti.
