@@ -91,3 +91,7 @@ Non serve `Program.cs`: il punto di ingresso WPF è generato da `App.xaml`.
 ### Convenzione per i prototipi C++
 
 Le versioni consolidate del progetto docente sono conservate in cartelle autonome `OrarioDocenteCPP_P1`, `OrarioDocenteCPP_P2`, ecc. Ogni fase contiene la propria soluzione Visual Studio (`.sln`) e il progetto (`.vcxproj`). La fase successiva parte da una copia della precedente, senza sovrascriverla.
+
+## Approfondimenti P2
+
+La fase P2 presenta due applicazioni del polimorfismo: [P2-A — vincoli](Documentazione/P2/P2_Dispensa_Teorica.md) e [P2-B — tessere di aula e laboratorio](Documentazione/P2/P2_Dispensa_Teorica_Tessere_Polimorfiche.md). La versione docente P2 contiene `TesseraAula`, `TesseraLaboratorio` e la dotazione informatica opzionale `DotazioneLabInformatica`; P0 e P1 restano versioni storiche autonome.

@@ -354,3 +354,9 @@ Valutare separatamente: **correttezza funzionale**, **comprensione dei concetti*
 ### Nota di gestione — ambiente di compilazione (11 novembre 2026)
 
 È stata adottata la scelta di usare esclusivamente Visual Studio per i progetti didattici C++ di tutte le fasi. Non aggiungere file CMake o istruzioni CMake nei materiali futuri.
+
+## Integrazione P2 — Due applicazioni del polimorfismo
+
+La fase P2 è articolata in **P2-A** (vincoli polimorfici: `Vincolo`, `Verifica()`, `GetMessaggio()`, limite modificabile) e **P2-B** (tessere polimorfiche: `Tessera`, `TesseraAula`, `TesseraLaboratorio`, `DotazioneLabInformatica`). La seconda unità introduce un puntatore proprietario opzionale e mostra il ruolo del distruttore virtuale quando `Orario` elimina oggetti derivati tramite `Tessera*`. I dati specifici della tessera di laboratorio sono `tipoLaboratorio` e `docenteITP`; la dotazione informatica contiene un vettore di descrizioni delle postazioni e l'indicazione della LIM. La matrice dell'orario resta invariata. Le versioni P0 e P1 non vengono modificate retroattivamente.
+
+**Materiali:** [dispensa P2-A](P2/P2_Dispensa_Teorica.md), [dispensa P2-B](P2/P2_Dispensa_Teorica_Tessere_Polimorfiche.md), [guida P2](P2/P2_Guida_Laboratorio.md), [esercizi](P2/P2_Esercizi.md), [soluzioni](P2/P2_Soluzioni_Esercizi.md).
