@@ -177,3 +177,18 @@ Per verificare separatamente i due vincoli occorrono casi costruiti con attenzio
 **Output P2:** due applicazioni console che applicano più vincoli mediante polimorfismo e ripristinano l'orario dopo uno scambio rifiutato.
 
 **Continuità P3:** lo scambio confermato potrà essere registrato in una pila per consentirne l'annullamento.
+
+
+## Integrazione del percorso: P2-A e P2-B
+
+**Stato attuale:** il prototipo docente P2 e i materiali P2-A sono pubblicati; la successiva estensione P2-B introduce tessere polimorfiche. Le parti precedenti della scheda descrivono il percorso originario sui vincoli, mentre questa integrazione aggiorna il riferimento al codice corrente.
+
+**P2-A — Vincoli:** `Vincolo` dichiara `Verifica(Orario&)` e `GetMessaggio()` virtuali puri. `MotoreScambi::Scambia` riceve anche `std::string& messaggio`. Il limite giornaliero del docente parte da **4 ore** ed è modificabile dal menu (opzione 8, valori 1–8). L'orario dimostrativo, con giornate da 6–7 lezioni, non rispetta inizialmente il limite 4: per le prove di scambio occorre portarlo a un valore compatibile. I vecchi casi di prova con limite 7 restano validi **solo dopo aver impostato 7**.
+
+**P2-B — Tessere:** `Tessera` è una base concreta con `GetDescrizione()` virtuale e distruttore virtuale. `TesseraAula` non aggiunge attributi; `TesseraLaboratorio` aggiunge `tipoLaboratorio`, `docenteITP` e un puntatore proprietario opzionale a `DotazioneLabInformatica`. Quest'ultima conserva `vector<string> postazioni` e `bool presenzaLIM`. Per i laboratori non informatici il puntatore è `nullptr`.
+
+**Competenze aggiuntive:** riconoscere il dispatch virtuale attraverso `Tessera*`; distinguere ereditarietà e composizione; gestire un puntatore proprietario opzionale; spiegare l'ordine dei distruttori e il motivo del distruttore virtuale; prevenire copie superficiali con doppia deallocazione.
+
+**Verifiche aggiuntive:** consultazione di una tessera in aula e una in laboratorio; descrizione della dotazione informatica; laboratorio non informatico senza dotazione; scambio che conserva l'oggetto concreto; rilascio corretto quando `Orario` distrugge le tessere. Per gli studenti, il modello analogo si applica all'orario di classe mantenendo le differenze già previste fra i due prototipi.
+
+**Materiali disponibili:** [dispensa P2-A](P2_Dispensa_Teorica.md), [dispensa P2-B](P2_Dispensa_Teorica_Tessere_Polimorfiche.md), [guida laboratorio](P2_Guida_Laboratorio.md), [esercizi](P2_Esercizi.md), [soluzioni](P2_Soluzioni_Esercizi.md), [codice docente](../../OrarioDocenteCPP_P2/).

@@ -243,3 +243,18 @@ Il metodo `GetMessaggio()` deve riportare **il limite effettivamente impostato**
 **Prove richieste:** avvio con limite 2; cambio a 3; controllo di una giornata con tre lezioni della stessa materia; cambio a 2 e nuova verifica; tentativo di inserire 0 o 9; controllo che il testo del messaggio riporti il limite corretto. Indicate inoltre cosa succede agli scambi se l'orario iniziale viola il limite corrente.
 
 **Consegna:** codice dei due metodi, modifica al menu e tabella dei risultati attesi e osservati. Esercizio di approfondimento, non incluso nel punteggio base di 20 punti.
+
+
+---
+
+## P2-B — Esercizi sulle tessere polimorfiche (approfondimento)
+
+**Esercizio O — Gerarchia e UML.** Disegna `Tessera`, `TesseraAula`, `TesseraLaboratorio` e `DotazioneLabInformatica`, distinguendo ereditarietà e proprietà dell'oggetto dinamico. Indica gli attributi `tipoLaboratorio`, `docenteITP`, `postazioni` e `presenzaLIM`.
+
+**Esercizio P — Oggetto opzionale.** Scrivi la creazione di una tessera per un laboratorio di Informatica con due postazioni e LIM e di una tessera per un laboratorio di Chimica senza dotazione informatica. Spiega il significato di `nullptr`.
+
+**Esercizio Q — Distruttori e memoria.** Un `Tessera*` punta a una `TesseraLaboratorio` con dotazione allocata dinamicamente. Disegna i collegamenti in memoria e descrivi l'ordine delle distruzioni eseguite da `delete`. Spiega perché `~Tessera()` deve essere `virtual` e perché è pericolosa la copia superficiale del puntatore `dotazione`.
+
+**Esercizio R — Dispatch virtuale.** Senza controllare il tipo concreto, visualizza la descrizione di una tessera ottenuta con `Orario::Get`. Spiega perché il metodo corretto viene scelto a runtime.
+
+Gli esercizi O–R sono separati dai 20 punti base degli esercizi P2-A.

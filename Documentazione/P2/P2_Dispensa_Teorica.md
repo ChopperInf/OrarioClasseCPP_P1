@@ -94,9 +94,9 @@ class VincoloMaxOreGiornaliere {
 }
 class MotoreScambi {
     -vector~Vincolo*~ vincoli
-    -VerificaVincoli(Orario& orario) bool
+    -VerificaVincoli(Orario& orario, string& messaggio) bool
     +AggiungiVincolo(Vincolo* vincolo) void
-    +Scambia(Orario& orario, Posizione prima, Posizione seconda) bool
+    +Scambia(Orario& orario, Posizione prima, Posizione seconda, string& messaggio) bool
 }
 Vincolo <|-- VincoloSenzaBuchi
 Vincolo <|-- VincoloMaxOreGiornaliere
@@ -111,7 +111,7 @@ Possiamo utilizzare un puntatore alla classe base per indicare un oggetto deriva
 
 ```cpp
 VincoloSenzaBuchi senzaBuchi;
-VincoloMaxOreGiornaliere massimo(7);
+VincoloMaxOreGiornaliere massimo(4);
 
 Vincolo* primo = &senzaBuchi;
 Vincolo* secondo = &massimo;
@@ -235,3 +235,8 @@ std::string VincoloMaxOreGiornaliere::GetMessaggio() {
 In questo modo un limite di 4 produce un messaggio riferito a **4 ore** e, dopo la modifica a 6, il messaggio si riferisce a **6 ore**. La console può mostrare il messaggio del primo vincolo non rispettato attraverso `std::string& messaggio`, senza introdurre eccezioni.
 
 **Aspetto da comprendere:** se l'orario iniziale supera il limite corrente, `Scambia` rifiuta qualsiasi scambio finché l'orario di partenza non rispetta tutti i vincoli. Cambiare il limite non modifica le tessere dell'orario e non salva il valore su file.
+
+
+## P2-A e P2-B: due applicazioni del polimorfismo
+
+Questa è la dispensa **P2-A**, dedicata ai vincoli. La [seconda dispensa P2-B](P2_Dispensa_Teorica_Tessere_Polimorfiche.md) applica gli stessi concetti alle tessere `TesseraAula` e `TesseraLaboratorio`, mostrando un caso concreto di distruzione attraverso un puntatore alla classe base. Il distruttore virtuale di `Vincolo` è una precauzione corretta, ma il motore non distrugge i vincoli perché non ne è proprietario. Diversamente, `Orario` elimina le tessere possedute: il distruttore virtuale di `Tessera` è quindi indispensabile per eliminare anche l'eventuale dotazione informatica.

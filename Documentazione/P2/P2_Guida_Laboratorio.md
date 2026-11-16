@@ -216,3 +216,18 @@ Nel prototipo del docente il valore iniziale è **4** e il menu contiene l'opzio
 **Verifiche aggiuntive:** limite iniziale 2; modifica a 3; rifiuto di valori fuori intervallo durante l'input; messaggio aggiornato; segnalazione di orario già non valido; nessuna modifica alle celle dopo uno scambio rifiutato. Per testare uno scambio, l'orario iniziale deve rispettare il limite corrente.
 
 **Attenzione:** la nuova voce del menu deve avere un numero libero; aggiornate anche il valore massimo accettato dalla funzione che legge la scelta. Il limite è modificabile solo durante l'esecuzione: non è previsto il salvataggio su file.
+
+
+## P2-B — Attività aggiuntiva: tessere polimorfiche
+
+**Riferimento:** [seconda dispensa](P2_Dispensa_Teorica_Tessere_Polimorfiche.md). Questa attività segue P2-A e non sostituisce gli esercizi sui vincoli.
+
+1. Aggiungete alla classe `Tessera` un metodo `virtual std::string GetDescrizione()` e un distruttore virtuale; mantenete i getter esistenti.
+2. Create `TesseraAula` derivata da `Tessera`, ridefinendo `GetDescrizione()` con `override`.
+3. Create `DotazioneLabInformatica` con `std::vector<std::string> postazioni` e `bool presenzaLIM`. Ricavate il numero delle postazioni da `size()`.
+4. Create `TesseraLaboratorio` con `tipoLaboratorio`, `docenteITP` e `DotazioneLabInformatica* dotazione`. Per laboratori non informatici il puntatore è `nullptr`.
+5. Nel costruttore della tessera di laboratorio memorizzate il puntatore trasferito in proprietà; nel distruttore eseguite `delete dotazione`. Impedite la copia per evitare due proprietari dello stesso puntatore.
+6. Modificate i dati di esempio inserendo sia lezioni in aula sia lezioni in laboratorio. Aggiornate la consultazione di una cella usando `GetDescrizione()` tramite `Tessera*`.
+7. Aggiungete i nuovi file `.h` e `.cpp` al progetto Visual Studio. Non modificate la matrice `Tessera* celle[5][8]` né l'algoritmo di scambio.
+
+**Collaudo P2-B:** descrizione corretta di entrambe le tessere; laboratorio informatico con dotazione e LIM; laboratorio di Fisica con `nullptr`; scambio che conserva tipo concreto e dati; distruzione corretta tramite `Tessera*`; nessuna doppia deallocazione. Se `Orario::Set` rifiuta una tessera, il chiamante deve distruggerla.

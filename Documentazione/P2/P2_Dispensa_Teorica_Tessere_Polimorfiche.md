@@ -1,33 +1,19 @@
-# P2 — Seconda dispensa teorica: ereditarietà e polimorfismo nelle tessere
+# P2-B — Ereditarietà, polimorfismo e memoria nelle tessere
 
-## 1. Un secondo problema concreto
+**Seconda dispensa teorica P2.** Complementare alla [P2-A sui vincoli](P2_Dispensa_Teorica.md). Gli esempi corrispondono ai sorgenti di `OrarioDocenteCPP_P2/Model`.
 
-Nel programma attuale ogni cella occupata contiene una `Tessera`, che descrive una lezione mediante **materia**, **classe** e **aula**. Tuttavia non tutte le lezioni sono dello stesso tipo:
+## 1. Il problema
 
-- una **lezione in aula** utilizza una normale aula;
-- una **lezione in laboratorio** richiede anche il **tipo di laboratorio** e il **nome e cognome dell'insegnante di laboratorio** (docente tecnico-pratico, se previsto).
+Una lezione può svolgersi in aula oppure in laboratorio. Entrambe condividono materia, classe e aula; le lezioni in laboratorio richiedono anche il tipo di laboratorio e il **docenteITP** (nome e cognome in una sola stringa). Soltanto un laboratorio di Informatica può avere una dotazione informatica con descrizione delle postazioni e presenza della LIM. Per Fisica, Chimica, Meccanica e altri laboratori la dotazione informatica è assente.
 
-Vogliamo mantenere un solo orario, senza creare due matrici separate e senza ripetere inutilmente i dati comuni.
+## 2. Modello delle classi
 
-**Obiettivo:** comprendere come usare una classe base `Tessera` e due classi derivate, `TesseraAula` e `TesseraLaboratorio`.
-
-Questa dispensa propone una **possibile evoluzione**, non descrive una modifica già realizzata nei sorgenti P2.
-
-## 2. Individuare ciò che è comune e ciò che cambia
-
-| Informazione | TesseraAula | TesseraLaboratorio |
-|---|---|---|
-| Materia | Sì | Sì |
-| Classe | Sì | Sì |
-| Nome dell'aula / laboratorio | Sì | Sì |
-| Tipo di laboratorio | No | Sì |
-| Nome e cognome dell'insegnante di laboratorio | No | Sì |
-
-La classe base conserva le tre informazioni comuni. La classe derivata `TesseraLaboratorio` aggiunge solo quelle specifiche. `TesseraAula` non necessita di nuovi attributi, ma rappresenta esplicitamente il tipo di lezione.
-
-**Esempio:** una tessera di aula può indicare «Matematica, 4AI, aula 12»; una tessera di laboratorio può indicare «Informatica, 4AI, laboratorio INF2, tipo Informatica, insegnante di laboratorio Mario Rossi».
-
-## 3. Diagramma delle classi
+| Classe | Dati specifici |
+|---|---|
+| `Tessera` | `materia`, `classe`, `aula` (comuni) |
+| `TesseraAula` | Nessun attributo aggiuntivo |
+| `TesseraLaboratorio` | `tipoLaboratorio`, `docenteITP`, `DotazioneLabInformatica* dotazione` |
+| `DotazioneLabInformatica` | `vector<string> postazioni`, `bool presenzaLIM` |
 
 ```mermaid
 classDiagram
@@ -35,9 +21,6 @@ classDiagram
         -string materia
         -string classe
         -string aula
-        +GetMateria() string
-        +GetClasse() string
-        +GetAula() string
         +GetDescrizione() string
         +~Tessera()
     }
@@ -46,64 +29,52 @@ classDiagram
     }
     class TesseraLaboratorio {
         -string tipoLaboratorio
-        -string nomeInsegnanteLaboratorio
-        -string cognomeInsegnanteLaboratorio
-        +GetTipoLaboratorio() string
-        +GetNomeInsegnanteLaboratorio() string
-        +GetCognomeInsegnanteLaboratorio() string
+        -string docenteITP
+        -DotazioneLabInformatica* dotazione
         +GetDescrizione() string
+        +~TesseraLaboratorio()
+    }
+    class DotazioneLabInformatica {
+        -vector~string~ postazioni
+        -bool presenzaLIM
+        +GetNumeroPostazioni() int
+        +GetPresenzaLIM() bool
     }
     Tessera <|-- TesseraAula
     Tessera <|-- TesseraLaboratorio
+    TesseraLaboratorio "1" *-- "0..1" DotazioneLabInformatica : possiede
 ```
 
-La freccia indica **ereditarietà**: una `TesseraLaboratorio` **è una** `Tessera`, ma possiede informazioni aggiuntive.
+La freccia di generalizzazione esprime **ereditarietà** («è una»); il rombo pieno esprime **composizione**, cioè proprietà e durata dell'oggetto contenuto. Il collegamento `0..1` significa che la dotazione è facoltativa.
 
-## 4. La classe base: Tessera.h
-
-Nella versione P2 già pubblicata `Tessera` non è polimorfica: non possiede metodi virtuali. Per questa evoluzione introduciamo un metodo `virtual` per descrivere la lezione e un **distruttore virtuale**.
+## 3. Classe base e distruttore virtuale
 
 ```cpp
-#pragma once
-#include <string>
-
 class Tessera {
 private:
-    std::string materia;
-    std::string classe;
-    std::string aula;
-
+    std::string materia, classe, aula;
 public:
     Tessera(std::string materia, std::string classe, std::string aula);
     std::string GetMateria();
     std::string GetClasse();
     std::string GetAula();
-
     virtual std::string GetDescrizione();
     virtual ~Tessera();
 };
 ```
 
-La base **non è astratta**, perché `GetDescrizione()` ha una propria implementazione. Questo è diverso dalla classe `Vincolo`, nella quale `Verifica()` e `GetMessaggio()` sono virtuali puri (`= 0`).
-
-**Tessera.cpp** (si conservano il costruttore e i getter già esistenti; si aggiungono):
+La classe base è **concreta**: `GetDescrizione()` ha una propria implementazione. Diversamente, la classe `Vincolo` della P2-A è astratta perché dichiara metodi virtuali puri (`= 0`). La base può essere usata per leggere i dati comuni, mentre `GetDescrizione()` viene ridefinito dalle derivate con `override`.
 
 ```cpp
 std::string Tessera::GetDescrizione() {
     return materia + " - " + classe + " - " + aula;
 }
-
 Tessera::~Tessera() {}
 ```
 
-## 5. Una tessera per le lezioni in aula
-
-**TesseraAula.h**
+## 4. La tessera di aula
 
 ```cpp
-#pragma once
-#include "Tessera.h"
-
 class TesseraAula : public Tessera {
 public:
     TesseraAula(std::string materia, std::string classe, std::string aula);
@@ -111,167 +82,132 @@ public:
 };
 ```
 
-**TesseraAula.cpp**
-
 ```cpp
-#include "TesseraAula.h"
-
 TesseraAula::TesseraAula(std::string materia, std::string classe, std::string aula)
     : Tessera(materia, classe, aula) {}
-
 std::string TesseraAula::GetDescrizione() {
     return "AULA - " + Tessera::GetDescrizione();
 }
 ```
 
-La sintassi `: Tessera(materia, classe, aula)` richiama il costruttore della classe base. `Tessera::GetDescrizione()` richiama **esplicitamente** l'implementazione della classe base, evitando di ripetere la composizione delle informazioni comuni.
+La classe derivata richiama il costruttore della base; non deve duplicarne gli attributi.
 
-## 6. Una tessera per le lezioni in laboratorio
-
-Per rappresentare con chiarezza nome e cognome, usiamo due attributi distinti.
-
-**TesseraLaboratorio.h**
+## 5. La dotazione informatica: un oggetto strutturato
 
 ```cpp
-#pragma once
-#include "Tessera.h"
+class DotazioneLabInformatica {
+private:
+    std::vector<std::string> postazioni;
+    bool presenzaLIM;
+public:
+    DotazioneLabInformatica(std::vector<std::string> postazioni, bool presenzaLIM);
+    int GetNumeroPostazioni();
+    std::string GetDescrizionePostazione(int indice);
+    bool GetPresenzaLIM();
+};
+```
 
+Il costruttore inizializza vettore e booleano. Il numero di postazioni **non è un attributo duplicato**: si ottiene da `postazioni.size()`. Il metodo `GetDescrizionePostazione` controlla l'indice e restituisce la descrizione o una stringa vuota se l'indice è errato. Il vettore e le stringhe liberano automaticamente le risorse quando viene distrutto l'oggetto dotazione.
+
+## 6. La tessera di laboratorio
+
+```cpp
 class TesseraLaboratorio : public Tessera {
 private:
     std::string tipoLaboratorio;
-    std::string nomeInsegnanteLaboratorio;
-    std::string cognomeInsegnanteLaboratorio;
-
+    std::string docenteITP;
+    DotazioneLabInformatica* dotazione;
 public:
     TesseraLaboratorio(std::string materia, std::string classe, std::string aula,
-                       std::string tipoLaboratorio, std::string nome, std::string cognome);
+                       std::string tipoLaboratorio, std::string docenteITP,
+                       DotazioneLabInformatica* dotazione);
+    ~TesseraLaboratorio() override;
+    TesseraLaboratorio(const TesseraLaboratorio&) = delete;
+    TesseraLaboratorio& operator=(const TesseraLaboratorio&) = delete;
     std::string GetTipoLaboratorio();
-    std::string GetNomeInsegnanteLaboratorio();
-    std::string GetCognomeInsegnanteLaboratorio();
+    std::string GetDocenteITP();
+    DotazioneLabInformatica* GetDotazione();
     std::string GetDescrizione() override;
 };
 ```
 
-**TesseraLaboratorio.cpp**
+Il costruttore inizializza la parte `Tessera` e memorizza `tipoLaboratorio`, `docenteITP` e il puntatore ricevuto. Il contratto è che **la tessera acquisisce la proprietà esclusiva** della dotazione non nulla. Il getter restituisce soltanto un puntatore per la consultazione: il chiamante non deve eseguire `delete`.
 
 ```cpp
-#include "TesseraLaboratorio.h"
-
-TesseraLaboratorio::TesseraLaboratorio(
-    std::string materia, std::string classe, std::string aula,
-    std::string tipoLaboratorio, std::string nome, std::string cognome)
-    : Tessera(materia, classe, aula),
-      tipoLaboratorio(tipoLaboratorio),
-      nomeInsegnanteLaboratorio(nome),
-      cognomeInsegnanteLaboratorio(cognome) {}
-
-std::string TesseraLaboratorio::GetTipoLaboratorio() {
-    return tipoLaboratorio;
-}
-
-std::string TesseraLaboratorio::GetNomeInsegnanteLaboratorio() {
-    return nomeInsegnanteLaboratorio;
-}
-
-std::string TesseraLaboratorio::GetCognomeInsegnanteLaboratorio() {
-    return cognomeInsegnanteLaboratorio;
-}
-
-std::string TesseraLaboratorio::GetDescrizione() {
-    return "LABORATORIO - " + Tessera::GetDescrizione() +
-           " - tipo: " + tipoLaboratorio +
-           " - insegnante di laboratorio: " +
-           nomeInsegnanteLaboratorio + " " + cognomeInsegnanteLaboratorio;
+TesseraLaboratorio::~TesseraLaboratorio() {
+    delete dotazione;
 }
 ```
 
-I campi privati della base non sono accessibili direttamente dalla derivata: per leggere i dati comuni usiamo il metodo pubblico `Tessera::GetDescrizione()`. Il costruttore della derivata inizializza prima la parte base e poi i propri attributi.
+`delete nullptr` è consentito e non fa nulla. Perciò lo stesso distruttore funziona per Informatica, Fisica, Chimica e Meccanica. Il campo `tipoLaboratorio` indica il tipo: non bisogna dedurlo dalla sola presenza del puntatore.
 
-## 7. Il polimorfismo: stesso puntatore, comportamento differente
+## 7. Esempi di creazione e polimorfismo
 
 ```cpp
-Tessera* prima = new TesseraAula("Matematica", "4AI", "12");
-Tessera* seconda = new TesseraLaboratorio(
-    "Informatica", "4AI", "INF2", "Informatica", "Mario", "Rossi");
+Tessera* aula = new TesseraAula("Matematica", "4AI", "A12");
+Tessera* informatica = new TesseraLaboratorio(
+    "Informatica", "4AI", "LAB-INF", "Informatica", "Mario Rossi",
+    new DotazioneLabInformatica({"PC docente", "PC Windows", "PC Linux"}, true));
+Tessera* fisica = new TesseraLaboratorio(
+    "Fisica", "4AI", "LAB-FIS", "Fisica", "Anna Bianchi", nullptr);
 
-std::cout << prima->GetDescrizione() << "\n";
-std::cout << seconda->GetDescrizione() << "\n";
+std::cout << aula->GetDescrizione() << "\\n";
+std::cout << informatica->GetDescrizione() << "\\n";
+std::cout << fisica->GetDescrizione() << "\\n";
 
-delete prima;
-delete seconda;
+delete aula;
+delete informatica;
+delete fisica;
 ```
 
-Il tipo **statico** di entrambi i puntatori è `Tessera*`, ma gli oggetti effettivi sono diversi. La chiamata a `GetDescrizione()` seleziona a runtime l'implementazione corretta, grazie a `virtual` nella base e a `override` nelle derivate.
+Il tipo statico è sempre `Tessera*`, ma il tipo concreto degli oggetti è differente. La chiamata virtuale esegue la versione di `GetDescrizione()` corrispondente all'oggetto effettivo. I metodi specifici, come `GetDotazione()`, non sono accessibili direttamente tramite un `Tessera*`.
 
-Un puntatore `Tessera*` può utilizzare i metodi dichiarati in `Tessera`, ma **non** può chiamare direttamente `GetTipoLaboratorio()`, che appartiene solo alla classe derivata.
+## 8. La sequenza di distruzione e lo stato della memoria
 
-## 8. Collegamento alla matrice dell'orario
-
-L'attuale `Orario` possiede una matrice:
-
-```cpp
-Tessera* celle[5][8];
+```text
+Orario
+  celle[0][0] ---> TesseraLaboratorio (heap)
+                         |
+                         +-- dotazione ---> DotazioneLabInformatica (heap)
+                                               |
+                                               +-- vector<string> postazioni
 ```
 
-La matrice **non deve cambiare tipo** per ospitare oggetti derivati. Anche il metodo `Set(Posizione, Tessera*)` può ricevere puntatori a `TesseraAula` e `TesseraLaboratorio`.
+Quando `Orario::~Orario()` esegue `delete celle[0][0]`, il distruttore **virtuale** della base permette di eseguire `~TesseraLaboratorio()`, che libera la dotazione con `delete dotazione`. La distruzione di `DotazioneLabInformatica` distrugge il suo vettore e le stringhe. Infine si distrugge la parte base `Tessera`. Senza distruttore virtuale, eliminare un oggetto derivato tramite un puntatore alla base comporta **comportamento indefinito**, non semplicemente la mancata chiamata di un distruttore.
+
+La copia predefinita della tessera di laboratorio copierebbe soltanto l'indirizzo `dotazione`, creando due proprietari dello stesso oggetto e rischiando una doppia deallocazione. Per questa fase la copia e l'assegnazione sono vietate con `= delete`. La copia profonda è un possibile approfondimento successivo.
+
+## 9. Integrazione con Orario e responsabilità
+
+La matrice resta `Tessera* celle[5][8]`: può contenere puntatori a tutte le classi derivate. `ScambiaCelle` scambia i puntatori senza perdere il tipo concreto. `Orario::Get` restituisce un puntatore **non proprietario**. `Orario::Set` acquisisce la proprietà della tessera **solo se restituisce true**:
 
 ```cpp
-orario.Set(Posizione(0, 0),
-           new TesseraAula("Matematica", "4AI", "12"));
-
-orario.Set(Posizione(0, 1),
-           new TesseraLaboratorio("Informatica", "4AI", "INF2",
-                                 "Informatica", "Mario", "Rossi"));
-```
-
-**Attenzione alla proprietà:** `Set` acquisisce la proprietà del puntatore **soltanto quando restituisce `true`**. Se `Set` fallisce, il chiamante deve eliminare l'oggetto creato per evitare una perdita di memoria. Per esempio:
-
-```cpp
-Tessera* nuova = new TesseraAula("Matematica", "4AI", "12");
+Tessera* nuova = new TesseraAula("Matematica", "4AI", "A12");
 if (!orario.Set(Posizione(0, 0), nuova))
     delete nuova;
 ```
 
-Il distruttore di `Orario` già esegue `delete celle[giorno][ora]`. Per distruggere correttamente anche la parte specifica degli oggetti derivati, il distruttore di `Tessera` **deve essere virtuale**.
+Se la tessera rifiutata fosse di laboratorio, il `delete` tramite `Tessera*` libererebbe anche l'eventuale dotazione. Nel modello didattico la dotazione è **di proprietà della singola tessera**: non condividere lo stesso puntatore tra più tessere. Nella realtà le dotazioni appartengono agli ambienti fisici; questa è una semplificazione intenzionale per studiare proprietà e distruzione.
 
-Il metodo `ScambiaCelle` scambia puntatori, quindi conserva il tipo reale e tutte le informazioni degli oggetti senza copiarli.
-
-## 9. Visualizzare tessere differenti senza conoscere il tipo concreto
-
-La console attuale legge `GetMateria()`, `GetClasse()` e `GetAula()`. In una futura versione può usare il metodo virtuale comune:
-
-```cpp
-Tessera* tessera = orario.Get(posizione);
-if (tessera == nullptr)
-    std::cout << "Cella vuota\n";
-else
-    std::cout << tessera->GetDescrizione() << "\n";
-```
-
-Non servono due matrici, né una catena di `if` che distingua manualmente le tessere. Aggiungere una nuova tipologia di tessera richiede una nuova classe derivata, senza modificare il codice di visualizzazione che usa `GetDescrizione()`.
-
-## 10. Confronto con il polimorfismo dei vincoli
+## 10. Confronto con i vincoli P2-A
 
 | Vincoli | Tessere |
 |---|---|
-| Base: `Vincolo` | Base: `Tessera` |
-| Base astratta | Base concreta |
+| Base astratta `Vincolo` | Base concreta `Tessera` |
 | `Verifica()` e `GetMessaggio()` virtuali puri | `GetDescrizione()` virtuale con implementazione |
-| Il motore conserva `Vincolo*` non proprietari | L'orario conserva `Tessera*` di cui è proprietario |
-| Ogni derivata verifica una regola | Ogni derivata descrive una lezione |
-| I vincoli vivono nella console | Le tessere vengono distrutte dall'orario |
+| Il motore non possiede i vincoli | L'orario possiede le tessere |
+| Distruttore virtuale per sicurezza dell'interfaccia | Distruttore virtuale necessario per il `delete` polimorfico |
+| Regole di validazione differenti | Tipologie di lezione differenti |
 
-Il principio comune è: **programmare rispetto a un'interfaccia condivisa, lasciando agli oggetti concreti la scelta del comportamento**.
+## 11. Domande di ripasso
 
-## 11. Domande di verifica
+1. Perché `docenteITP` è un attributo unico e non due stringhe separate?
+2. Perché `DotazioneLabInformatica` è opzionale e quando vale `nullptr`?
+3. Perché il numero delle postazioni non è memorizzato in un secondo attributo?
+4. Qual è la differenza tra ereditarietà e composizione nel diagramma?
+5. Quale sequenza di distruttori viene eseguita da `delete` tramite `Tessera*`?
+6. Che cosa rischia una copia superficiale del puntatore `dotazione`?
+7. Perché `Orario::ScambiaCelle` non deve conoscere i tipi concreti delle tessere?
+8. Che cosa succede se `Orario::Set` rifiuta una tessera appena allocata?
 
-1. Quali attributi devono stare nella classe base e quali solo in `TesseraLaboratorio`?
-2. Perché `TesseraAula` può ereditare senza aggiungere attributi?
-3. Perché `GetDescrizione()` è `virtual`? Che cosa accadrebbe senza `virtual`?
-4. Perché il distruttore di `Tessera` deve essere `virtual`?
-5. Perché `Tessera*` può indicare una `TesseraLaboratorio`, ma non permette di chiamare direttamente `GetTipoLaboratorio()`?
-6. Che cosa succede alla memoria se `Set` rifiuta una tessera appena creata con `new`?
-7. Perché lo scambio di due celle conserva anche il tipo concreto delle tessere?
-8. Qual è la differenza tra una classe base astratta come `Vincolo` e una classe base concreta come `Tessera`?
-
-**Collegamenti:** [prima dispensa P2](P2_Dispensa_Teorica.md) · [codice Tessera attuale](../../OrarioDocenteCPP_P2/Model/Tessera.h) · [codice Orario attuale](../../OrarioDocenteCPP_P2/Model/Orario.h).
+**Codice:** [Model](../../OrarioDocenteCPP_P2/Model/) · [P2-A](P2_Dispensa_Teorica.md).

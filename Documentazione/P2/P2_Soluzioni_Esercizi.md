@@ -335,3 +335,35 @@ void InterfacciaConsole::ModificaMassimoOreMateria() {
 ```
 
 **Risultati attesi:** con limite 3, tre lezioni della stessa materia sono consentite; con limite 2 non lo sono. L'input 0 o 9 viene respinto da `LeggiIntero` e richiesto nuovamente. Il messaggio contiene il limite aggiornato. Se l'orario di partenza è già non valido, il motore rifiuta gli scambi prima di effettuarli. Il valore modificato non viene salvato su file.
+
+
+## Soluzioni P2-B — Tessere polimorfiche
+
+**O — UML e responsabilità.** `TesseraAula` e `TesseraLaboratorio` derivano da `Tessera`. `TesseraLaboratorio` possiede facoltativamente un oggetto `DotazioneLabInformatica`, contenente `vector<string> postazioni` e `bool presenzaLIM`. La derivata conserva `tipoLaboratorio` e un solo campo `docenteITP`.
+
+**P — Oggetto opzionale.**
+
+```cpp
+Tessera* informatica = new TesseraLaboratorio(
+    "Informatica", "4AI", "LAB-INF", "Informatica", "Mario Rossi",
+    new DotazioneLabInformatica({"PC docente", "PC studente"}, true));
+Tessera* chimica = new TesseraLaboratorio(
+    "Chimica", "4AI", "LAB-CH", "Chimica", "Anna Bianchi", nullptr);
+// Esempio isolato: i due oggetti non sono stati trasferiti a Orario.
+delete informatica;
+delete chimica;
+```
+
+**Q — Distruzione.** Il puntatore `Tessera*` indica l'oggetto derivato, che a sua volta indica una dotazione nell'heap. `delete` tramite la base virtuale richiama prima `~TesseraLaboratorio()`, che esegue `delete dotazione`; viene quindi distrutta la parte base `Tessera`. La distruzione di `DotazioneLabInformatica` distrugge automaticamente il suo `vector<string>`. La copia predefinita del puntatore produrrebbe due proprietari e rischierebbe una doppia `delete`: la copia è disabilitata.
+
+**R — Polimorfismo.**
+
+```cpp
+Tessera* tessera = orario.Get(Posizione(0, 0));
+if (tessera == nullptr)
+    std::cout << "Cella vuota\\n";
+else
+    std::cout << tessera->GetDescrizione() << "\\n";
+```
+
+`GetDescrizione()` è virtuale nella base e ridefinito con `override` nelle derivate. Non occorrono conversioni del puntatore né controlli sul tipo concreto.
