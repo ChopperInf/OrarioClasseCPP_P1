@@ -193,6 +193,7 @@ Nessuna delle tre prove supera il limite per materia. Nel secondo caso lo scambi
 class VincoloPrimaOraLibera : public Vincolo {
 public:
     bool Verifica(Orario& orario) override;
+    std::string GetMessaggio() override;
 };
 ```
 
@@ -207,6 +208,14 @@ bool VincoloPrimaOraLibera::Verifica(Orario& orario) {
             return false;
     }
     return true;
+}
+```
+
+Implementazione del messaggio richiesta dalla classe astratta:
+
+```cpp
+std::string VincoloPrimaOraLibera::GetMessaggio() {
+    return "la prima ora deve essere libera";
 }
 ```
 
@@ -268,3 +277,61 @@ if (!vincoli[i]->Verifica(orario)) {
 ```
 
 La console chiama `Scambia(orario, prima, seconda, messaggio)` e stampa il motivo in caso di rifiuto. Il motore deve comunque ripristinare le celle dopo uno scambio non valido.
+
+## Soluzione N — Limite modificabile e messaggio aggiornato
+
+**VincoloMaxOreMateria.h** (metodi da aggiungere alla classe):
+
+```cpp
+int GetMassimoOre();
+void SetMassimoOre(int nuovoMassimo);
+std::string GetMessaggio() override;
+```
+
+**VincoloMaxOreMateria.cpp** (implementazioni):
+
+```cpp
+int VincoloMaxOreMateria::GetMassimoOre() {
+    return massimoOre;
+}
+
+void VincoloMaxOreMateria::SetMassimoOre(int nuovoMassimo) {
+    if (nuovoMassimo >= 1 && nuovoMassimo <= 8)
+        massimoOre = nuovoMassimo;
+}
+
+std::string VincoloMaxOreMateria::GetMessaggio() {
+    return "superato il massimo di " + std::to_string(massimoOre) +
+           " ore della stessa materia in un giorno";
+}
+```
+
+**InterfacciaConsole.h** (metodo privato):
+
+```cpp
+void ModificaMassimoOreMateria();
+```
+
+**InterfacciaConsole.cpp** (esempio di nuova voce del menu, usando l'opzione 8 se libera):
+
+```cpp
+cout << "8 - Modifica massimo ore per materia (attuale: "
+     << vincoloMaxOreMateria.GetMassimoOre() << ")\\n";
+```
+
+La scelta del menu deve accettare anche 8 e il relativo `switch` deve chiamare `ModificaMassimoOreMateria()`.
+
+```cpp
+void InterfacciaConsole::ModificaMassimoOreMateria() {
+    cout << "Limite attuale: "
+         << vincoloMaxOreMateria.GetMassimoOre() << "\\n";
+    int nuovo = LeggiIntero("Nuovo limite (1-8): ", 1, 8);
+    vincoloMaxOreMateria.SetMassimoOre(nuovo);
+    cout << "Nuovo limite: "
+         << vincoloMaxOreMateria.GetMassimoOre() << "\\n";
+    if (!vincoloMaxOreMateria.Verifica(orario))
+        cout << "Attenzione: l'orario attuale supera il limite.\\n";
+}
+```
+
+**Risultati attesi:** con limite 3, tre lezioni della stessa materia sono consentite; con limite 2 non lo sono. L'input 0 o 9 viene respinto da `LeggiIntero` e richiesto nuovamente. Il messaggio contiene il limite aggiornato. Se l'orario di partenza è già non valido, il motore rifiuta gli scambi prima di effettuarli. Il valore modificato non viene salvato su file.
