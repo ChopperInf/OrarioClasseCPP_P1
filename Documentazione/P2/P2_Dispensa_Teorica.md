@@ -203,3 +203,35 @@ Un motore senza vincoli registrati, nella nostra P2, non autorizza scambi.
 ## Aggiornamento: identificare il vincolo violato
 
 Nel prototipo P2 aggiornato, `Vincolo` dichiara anche `virtual std::string GetMessaggio() = 0;`. Ogni classe derivata implementa questo metodo e restituisce un messaggio descrittivo. `MotoreScambi::Scambia` mantiene il risultato `bool`, ma riceve anche `std::string& messaggio`: se una verifica fallisce, `VerificaVincoli` assegna il messaggio del **primo** vincolo non rispettato. Dopo il ripristino dello scambio, la console mostra il motivo del rifiuto. Il nuovo metodo è un ulteriore esempio di polimorfismo.
+
+## Aggiornamento — Limite modificabile durante l'esecuzione
+
+Nel prototipo del docente il limite iniziale è **4 ore giornaliere**: il costruttore di `InterfacciaConsole` inizializza `vincoloMaxOre(4)`. L'opzione **8** del menu permette di impostare un nuovo valore compreso tra **1 e 8**. L'oggetto vincolo non viene ricreato: cambia soltanto il suo attributo privato `massimoOre`.
+
+```cpp
+// Nella classe VincoloMaxOreGiornaliere:
+int GetMassimoOre();
+void SetMassimoOre(int nuovoMassimo);
+
+// Nel costruttore di InterfacciaConsole:
+// vincoloMaxOre(4)
+
+// Nell'azione associata all'opzione 8:
+int nuovoMassimo = LeggiIntero("Nuovo limite (1-8): ", 1, 8);
+vincoloMaxOre.SetMassimoOre(nuovoMassimo);
+```
+
+Il metodo `SetMassimoOre` accetta soltanto valori da 1 a 8; `GetMassimoOre` restituisce il valore attuale. I successivi controlli utilizzano immediatamente il nuovo valore, perché il motore conserva un puntatore **allo stesso oggetto**.
+
+Il messaggio restituito dal vincolo deve dipendere dal valore corrente, non da una costante scritta nel testo:
+
+```cpp
+std::string VincoloMaxOreGiornaliere::GetMessaggio() {
+    return "superato il numero massimo di " +
+           std::to_string(massimoOre) + " ore giornaliere";
+}
+```
+
+In questo modo un limite di 4 produce un messaggio riferito a **4 ore** e, dopo la modifica a 6, il messaggio si riferisce a **6 ore**. La console può mostrare il messaggio del primo vincolo non rispettato attraverso `std::string& messaggio`, senza introdurre eccezioni.
+
+**Aspetto da comprendere:** se l'orario iniziale supera il limite corrente, `Scambia` rifiuta qualsiasi scambio finché l'orario di partenza non rispetta tutti i vincoli. Cambiare il limite non modifica le tessere dell'orario e non salva il valore su file.
