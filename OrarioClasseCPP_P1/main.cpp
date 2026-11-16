@@ -132,7 +132,7 @@ void VerificaOrario(Orario& orario, ValidatoreOrario& validatore) {
 
 void MostraMenu() {
     cout << "\n================================\n";
-    cout << "       ORARIO SCOLASTICO\n";
+    cout << "       ORARIO CLASSE\n";
     cout << "================================\n";
     cout << "1 - Visualizza orario\n";
     cout << "2 - Visualizza una tessera\n";
