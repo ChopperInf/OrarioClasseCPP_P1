@@ -68,6 +68,9 @@
     <ClCompile Include="Model\Orario.cpp" />
     <ClCompile Include="Model\Posizione.cpp" />
     <ClCompile Include="Model\Tessera.cpp" />
+    <ClCompile Include="Model\DotazioneLabInformatica.cpp" />
+    <ClCompile Include="Model\TesseraAula.cpp" />
+    <ClCompile Include="Model\TesseraLaboratorio.cpp" />
     <ClCompile Include="Engine\MotoreScambi.cpp" />
     <ClCompile Include="Engine\VincoloSenzaBuchi.cpp" />
     <ClCompile Include="Engine\VincoloMaxOreGiornaliere.cpp" />
@@ -80,6 +83,9 @@
     <ClInclude Include="Model\Orario.h" />
     <ClInclude Include="Model\Posizione.h" />
     <ClInclude Include="Model\Tessera.h" />
+    <ClInclude Include="Model\DotazioneLabInformatica.h" />
+    <ClInclude Include="Model\TesseraAula.h" />
+    <ClInclude Include="Model\TesseraLaboratorio.h" />
     <ClInclude Include="Engine\MotoreScambi.h" />
     <ClInclude Include="Engine\Vincolo.h" />
     <ClInclude Include="Engine\VincoloSenzaBuchi.h" />

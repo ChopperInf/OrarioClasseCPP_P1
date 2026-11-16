@@ -1,4 +1,6 @@
 #include "DatiEsempio.h"
+#include "Model/TesseraAula.h"
+#include "Model/TesseraLaboratorio.h"
 
 bool DatiEsempio::Carica(Orario& orario) {
     const std::string classi[4] = {"4AI", "4BI", "3AI", "5AI"};
@@ -10,7 +12,15 @@ bool DatiEsempio::Carica(Orario& orario) {
             std::string classe = classi[(giorno + ora) % 4];
             std::string materia = materie[(giorno + ora) % 2];
             std::string aula = "A" + std::to_string(ora + 1);
-            Tessera* tessera = new Tessera(materia, classe, aula);
+            Tessera* tessera;
+            if (materia == "Laboratorio") {
+                DotazioneLabInformatica* dotazione = new DotazioneLabInformatica(
+                    {"PC docente", "PC Windows", "PC Linux"}, true);
+                tessera = new TesseraLaboratorio("Informatica", classe, "LAB-INF",
+                                                 "Informatica", "Mario Rossi", dotazione);
+            } else {
+                tessera = new TesseraAula(materia, classe, aula);
+            }
             if (!orario.Set(Posizione(giorno, ora), tessera)) {
                 delete tessera; // Set non ha acquisito la proprieta'.
                 return false;

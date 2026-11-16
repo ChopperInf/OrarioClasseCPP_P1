@@ -11,4 +11,6 @@ public:
     std::string GetMateria();
     std::string GetClasse();
     std::string GetAula();
+    virtual std::string GetDescrizione();
+    virtual ~Tessera();
 };

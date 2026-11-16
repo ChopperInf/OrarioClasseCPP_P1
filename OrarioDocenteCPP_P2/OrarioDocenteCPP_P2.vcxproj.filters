@@ -14,6 +14,9 @@
     <ClCompile Include="Model\Orario.cpp"><Filter>Model</Filter></ClCompile>
     <ClCompile Include="Model\Posizione.cpp"><Filter>Model</Filter></ClCompile>
     <ClCompile Include="Model\Tessera.cpp"><Filter>Model</Filter></ClCompile>
+    <ClCompile Include="Model\DotazioneLabInformatica.cpp"><Filter>Model</Filter></ClCompile>
+    <ClCompile Include="Model\TesseraAula.cpp"><Filter>Model</Filter></ClCompile>
+    <ClCompile Include="Model\TesseraLaboratorio.cpp"><Filter>Model</Filter></ClCompile>
     <ClCompile Include="Engine\MotoreScambi.cpp"><Filter>Engine</Filter></ClCompile>
     <ClCompile Include="Engine\VincoloSenzaBuchi.cpp"><Filter>Engine</Filter></ClCompile>
     <ClCompile Include="Engine\VincoloMaxOreGiornaliere.cpp"><Filter>Engine</Filter></ClCompile>
@@ -26,6 +29,9 @@
     <ClInclude Include="Model\Orario.h"><Filter>Model</Filter></ClInclude>
     <ClInclude Include="Model\Posizione.h"><Filter>Model</Filter></ClInclude>
     <ClInclude Include="Model\Tessera.h"><Filter>Model</Filter></ClInclude>
+    <ClInclude Include="Model\DotazioneLabInformatica.h"><Filter>Model</Filter></ClInclude>
+    <ClInclude Include="Model\TesseraAula.h"><Filter>Model</Filter></ClInclude>
+    <ClInclude Include="Model\TesseraLaboratorio.h"><Filter>Model</Filter></ClInclude>
     <ClInclude Include="Engine\MotoreScambi.h"><Filter>Engine</Filter></ClInclude>
     <ClInclude Include="Engine\Vincolo.h"><Filter>Engine</Filter></ClInclude>
     <ClInclude Include="Engine\VincoloSenzaBuchi.h"><Filter>Engine</Filter></ClInclude>

@@ -6,3 +6,8 @@ Tessera::Tessera(std::string materia, std::string classe, std::string aula)
 std::string Tessera::GetMateria() { return materia; }
 std::string Tessera::GetClasse() { return classe; }
 std::string Tessera::GetAula() { return aula; }
+
+std::string Tessera::GetDescrizione() {
+    return materia + " - " + classe + " - " + aula;
+}
+Tessera::~Tessera() {}

@@ -57,6 +57,7 @@ void InterfacciaConsole::VisualizzaTessera() {
         cout << "Materia: " << tessera->GetMateria() << "\n";
         cout << "Classe: " << tessera->GetClasse() << "\n";
         cout << "Aula: " << tessera->GetAula() << "\n";
+        cout << "Descrizione: " << tessera->GetDescrizione() << "\n";
     }
 }
 
