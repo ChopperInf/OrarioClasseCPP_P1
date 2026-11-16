@@ -201,3 +201,18 @@ Non è richiesto introdurre `unique_ptr`, `map`, `set`, template personalizzati 
 ## Aggiornamento P2 — Mostrare il vincolo violato
 
 La versione aggiornata del motore utilizza `bool Scambia(Orario& orario, Posizione prima, Posizione seconda, std::string& messaggio)`. Aggiungete alla classe astratta `Vincolo` il metodo `virtual std::string GetMessaggio() = 0;` e implementatelo nelle classi derivate. Quando `VerificaVincoli` trova un vincolo non rispettato, deve assegnare a `messaggio` la descrizione fornita dal vincolo. La console stampa il messaggio dopo il rifiuto. Aggiornate di conseguenza le dichiarazioni e tutte le chiamate a `Scambia`. Non è necessario usare eccezioni.
+
+## Attività aggiuntiva — Modificare il limite dal menu
+
+Nel prototipo del docente il valore iniziale è **4** e il menu contiene l'opzione **8 – Modifica massimo ore giornaliere**. Nel vostro progetto di classe applicate lo stesso meccanismo a `VincoloMaxOreMateria`, mantenendo un limite iniziale **2** per gli esercizi sulle materie.
+
+1. Aggiungete `int GetMassimoOre();` e `void SetMassimoOre(int nuovoMassimo);` alla classe del vincolo. Il setter deve accettare soltanto valori tra 1 e 8.
+2. In `InterfacciaConsole.h` dichiarate `void ModificaMassimoOreMateria();`.
+3. Nel menu aggiungete una voce che mostri il limite attuale, senza scrivere un numero fisso nel testo.
+4. Nella nuova funzione leggete il valore con `LeggiIntero(..., 1, 8)`, chiamate il setter e mostrate il limite aggiornato.
+5. Modificate `GetMessaggio()` per includere il limite attuale con `std::to_string(GetMassimoOre())`.
+6. Verificate che la modifica non richieda di chiamare nuovamente `AggiungiVincolo`.
+
+**Verifiche aggiuntive:** limite iniziale 2; modifica a 3; rifiuto di valori fuori intervallo durante l'input; messaggio aggiornato; segnalazione di orario già non valido; nessuna modifica alle celle dopo uno scambio rifiutato. Per testare uno scambio, l'orario iniziale deve rispettare il limite corrente.
+
+**Attenzione:** la nuova voce del menu deve avere un numero libero; aggiornate anche il valore massimo accettato dalla funzione che legge la scelta. Il limite è modificabile solo durante l'esecuzione: non è previsto il salvataggio su file.
