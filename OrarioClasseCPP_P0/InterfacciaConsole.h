@@ -3,8 +3,11 @@
 #include "Engine/MotoreScambi.h"
 #include "Engine/ValidatoreOrario.h"
 #include <string>
+#include "ElencoAule.h"
+
 class InterfacciaConsole {
     Orario& orario;
+    ElencoAule& elencoAule;
     MotoreScambi motore;
     ValidatoreOrario validatore;
     int LeggiIntero(std::string messaggio, int minimo, int massimo);
@@ -14,7 +17,11 @@ class InterfacciaConsole {
     void RichiediScambio();
     void VerificaOrario();
     void MostraMenu();
+
+    void visualizzaAule();
+    void cercaAula();
+    void aggiungiAula();
 public:
-    InterfacciaConsole(Orario& orario);
+    InterfacciaConsole(Orario& orario, ElencoAule& elencoAule);
     void Esegui();
 };

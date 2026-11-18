@@ -18,3 +18,20 @@ bool DatiEsempio::Carica(Orario& orario) {
     }
     return true;
 }
+
+bool DatiEsempio::CaricaAule(ElencoAule& elenco)
+{
+    if (!elenco.Aggiungi(Aula("INF1", "Laboratorio", "Lotto 2"))) {
+        return false;
+    }
+
+    if (!elenco.Aggiungi(Aula("A1", "Aula", "Lotto 1"))) {
+        return false;
+    }
+
+    if (!elenco.Aggiungi(Aula("A5", "Laboratorio", "Lotto 3"))) {
+        return false;
+    }
+
+    return true;
+}
