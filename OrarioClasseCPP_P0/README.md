@@ -1,4 +1,4 @@
-# OrarioClasseCPP_P0
+# OrarioClasseCPP_P1
 
 Progetto C++ console della fase P0, percorso autonomo degli studenti.
 La guida e' in `Documentazione/P0/P0_Guida_Laboratorio.md` nella radice del repository.
