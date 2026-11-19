@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Progetto Orario scolastico
 
 Progetto didattico di Informatica per rappresentare e modificare l'orario settimanale di una classe, applicando la programmazione a oggetti e la separazione tra **Model**, **Engine** e **interfaccia**.
@@ -95,3 +96,6 @@ Le versioni consolidate del progetto docente sono conservate in cartelle autonom
 ## Approfondimenti P2
 
 La fase P2 presenta due applicazioni del polimorfismo: [P2-A — vincoli](Documentazione/P2/P2_Dispensa_Teorica.md) e [P2-B — tessere di aula e laboratorio](Documentazione/P2/P2_Dispensa_Teorica_Tessere_Polimorfiche.md). La versione docente P2 contiene `TesseraAula`, `TesseraLaboratorio` e la dotazione informatica opzionale `DotazioneLabInformatica`; P0 e P1 restano versioni storiche autonome.
+=======
+# OrarioClasseCPP_P1
+>>>>>>> 0ac64abf90000c133876166a8f32c614412831b8
